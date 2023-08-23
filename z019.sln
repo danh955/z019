@@ -11,9 +11,9 @@ Project("{2150E333-8FDC-42A3-9474-1A3956D46DE8}") = "Solution Items", "Solution 
 		README.md = README.md
 	EndProjectSection
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "z019.EodHistoricalData", "z019.EODHistoricalData\z019.EodHistoricalData.csproj", "{DD96B517-85B5-4B3B-AEA2-4A8D0706098D}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "z019.EodHistoricalData", "z019.EodHistoricalData\z019.EodHistoricalData.csproj", "{DD96B517-85B5-4B3B-AEA2-4A8D0706098D}"
 EndProject
-Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "ConsoleApp1", "ConsoleApp1\ConsoleApp1.csproj", "{226CD000-A4A6-42BB-B6A1-FB5D13394A06}"
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "z019.EodHistoricalDataTests", "z019.EodHistoricalDataTests\z019.EodHistoricalDataTests.csproj", "{73A4772E-FA3A-4582-8B88-12FFDC51A9A0}"
 EndProject
 Global
 	GlobalSection(SolutionConfigurationPlatforms) = preSolution
@@ -25,10 +25,10 @@ Global
 		{DD96B517-85B5-4B3B-AEA2-4A8D0706098D}.Debug|Any CPU.Build.0 = Debug|Any CPU
 		{DD96B517-85B5-4B3B-AEA2-4A8D0706098D}.Release|Any CPU.ActiveCfg = Release|Any CPU
 		{DD96B517-85B5-4B3B-AEA2-4A8D0706098D}.Release|Any CPU.Build.0 = Release|Any CPU
-		{226CD000-A4A6-42BB-B6A1-FB5D13394A06}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
-		{226CD000-A4A6-42BB-B6A1-FB5D13394A06}.Debug|Any CPU.Build.0 = Debug|Any CPU
-		{226CD000-A4A6-42BB-B6A1-FB5D13394A06}.Release|Any CPU.ActiveCfg = Release|Any CPU
-		{226CD000-A4A6-42BB-B6A1-FB5D13394A06}.Release|Any CPU.Build.0 = Release|Any CPU
+		{73A4772E-FA3A-4582-8B88-12FFDC51A9A0}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{73A4772E-FA3A-4582-8B88-12FFDC51A9A0}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{73A4772E-FA3A-4582-8B88-12FFDC51A9A0}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{73A4772E-FA3A-4582-8B88-12FFDC51A9A0}.Release|Any CPU.Build.0 = Release|Any CPU
 	EndGlobalSection
 	GlobalSection(SolutionProperties) = preSolution
 		HideSolutionNode = FALSE
