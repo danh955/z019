@@ -12,7 +12,7 @@ public class EodHDClient_GetExchangeSymbolListTest
     public EodHDClient_GetExchangeSymbolListTest(ITestOutputHelper loggerHelper)
     {
         this.logger = loggerHelper.BuildLogger();
-        this.client = new EodHDClient("Test", this.logger, new HttpClient(new MockHttpResponseMessage(MockData.Messages)));
+        this.client = new EodHDClient(new EodHDClientOptions() { ApiToken = "Test" }, this.logger, new HttpClient(new MockHttpResponseMessage(MockData.Messages)));
     }
 
     [Fact]

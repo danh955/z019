@@ -17,15 +17,21 @@ public sealed partial class EodHDClient
 {
     private const string ApiUrl = @"https://eodhistoricaldata.com/api/";
 
-    private readonly string apiToken;
+    private readonly EodHDClientOptions options;
     private readonly HttpClient httpClient;
     private readonly ILogger? logger;
 
-    public EodHDClient(string apiToken, ILogger? logger = null, HttpClient? httpClient = null)
+    /// <summary>
+    /// Constructor.
+    /// </summary>
+    /// <param name="options">EodHDClientOptions.</param>
+    /// <param name="logger">ILogger.</param>
+    /// <param name="httpClient">Optional HttpClient.</param>
+    /// <exception cref="NullReferenceException">When EodHDClientOptions.ApiToken is null or empty.</exception>
+    public EodHDClient(EodHDClientOptions options, ILogger? logger = null, HttpClient? httpClient = null)
     {
-        if (string.IsNullOrWhiteSpace(apiToken)) throw new ArgumentNullException(nameof(apiToken));
-
-        this.apiToken = apiToken;
+        if (string.IsNullOrWhiteSpace(options.ApiToken)) throw new NullReferenceException(nameof(options.ApiToken));
+        this.options = options;
         this.logger = logger;
 
         if (httpClient == null)
@@ -73,7 +79,7 @@ public sealed partial class EodHDClient
 
     private async Task<List<T>> ExecuteQueryAsync<T>(string uri, Func<HttpResponseMessage, Task<List<T>>> GetFromResponseAsync, CancellationToken cancellationToken)
     {
-        this.logger?.LogDebug("httpClient.GetAsync {uri}", uri.Replace(this.apiToken, "TokenRemoved"));
+        this.logger?.LogDebug("httpClient.GetAsync {uri}", uri.Replace(this.options.ApiToken, "TokenRemoved"));
 
         Polly.Retry.AsyncRetryPolicy<HttpResponseMessage> httpRetryPolicy = Policy
             .HandleResult<HttpResponseMessage>(r => r.StatusCode == (HttpStatusCode)429)
@@ -223,7 +229,7 @@ public sealed partial class EodHDClient
 
         builder.Append(separator);
         builder.Append("api_token=");
-        builder.Append(this.apiToken);
+        builder.Append(this.options.ApiToken);
 
         return builder.ToString();
     }
