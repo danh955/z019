@@ -18,11 +18,11 @@ public sealed partial class EodHDClient
     /// </summary>
     /// <param name="exchangeCode">Exchange code.  Default is 'US'.</param>
     /// <returns>List of exchange symbols.</returns>
-    public async Task<List<EodExchangeSymbol>> GetExchangeSymbolListAsync(
+    public async Task<List<EodHDExchangeSymbol>> GetExchangeSymbolListAsync(
         string? exchangeCode = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetExchangeSymbolListAsync<EodExchangeSymbol>(exchangeCode, null, cancellationToken).ConfigureAwait(false);
+        return await GetExchangeSymbolListAsync<EodHDExchangeSymbol>(exchangeCode, null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -41,8 +41,8 @@ public sealed partial class EodHDClient
             data: exchangeCode,
             csv: true);
 
-        return await ExecuteQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCsvQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
     }
 
-    public record EodExchangeSymbol(string Code, string Name, string Country, string Exchange, string Currency, string Type, string Isin);
+    public record EodHDExchangeSymbol(string Code, string Name, string Country, string Exchange, string Currency, string Type, string Isin);
 }

@@ -23,7 +23,7 @@ public partial class EodHDClient
     /// <param name="toDate">The last date to retrieve stock prices. If null, todays date.</param>
     /// <param name="period">Day, week, or month.</param>
     /// <returns>List of end of day price data.</returns>
-    public async Task<List<EodPrice>> GetEodAsync(
+    public async Task<List<EodHDPrice>> GetEodAsync(
         string symbol,
         string? exchangeCode = null,
         DateOnly? fromDate = null,
@@ -31,7 +31,7 @@ public partial class EodHDClient
         DataPeriod? period = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetEodAsync<EodPrice>(symbol, exchangeCode, fromDate, toDate, period, null, cancellationToken).ConfigureAwait(false);
+        return await GetEodAsync<EodHDPrice>(symbol, exchangeCode, fromDate, toDate, period, null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -62,8 +62,8 @@ public partial class EodHDClient
                                 period: period,
                                 csv: true);
 
-        return await ExecuteQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCsvQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
     }
 
-    public record EodPrice(DateOnly Date, double Open, double High, double Low, double Close, double Adjusted_close, long Volume);
+    public record EodHDPrice(DateOnly Date, double Open, double High, double Low, double Close, double Adjusted_close, long Volume);
 }

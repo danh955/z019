@@ -61,5 +61,62 @@ AAAJX,US,2023-06-01,9.14,9.14,9.14,9.14,9.14,0
 "),
             }
         },
+        {
+            "https://eodhistoricaldata.com/api/exchanges-list?api_token=Test",
+            new HttpResponseMessage()
+            {
+                StatusCode = HttpStatusCode.OK,
+                Content = new StringContent(
+@"
+[
+  {
+    ""Name"": ""USA Stocks"",
+    ""Code"": ""US"",
+    ""OperatingMIC"": ""XNAS, XNYS"",
+    ""Country"": ""USA"",
+    ""Currency"": ""USD"",
+    ""CountryISO2"": ""US"",
+    ""CountryISO3"": ""USA""
+  },
+  {
+    ""Name"": ""London Exchange"",
+    ""Code"": ""LSE"",
+    ""OperatingMIC"": ""XLON"",
+    ""Country"": ""UK"",
+    ""Currency"": ""GBP"",
+    ""CountryISO2"": ""GB"",
+    ""CountryISO3"": ""GBR""
+  },
+  {
+    ""Name"": ""NEO Exchange"",
+    ""Code"": ""NEO"",
+    ""OperatingMIC"": ""NEOE"",
+    ""Country"": ""Canada"",
+    ""Currency"": ""CAD"",
+    ""CountryISO2"": ""CA"",
+    ""CountryISO3"": ""CAN""
+  },
+  {
+    ""Name"": ""TSX Venture Exchange"",
+    ""Code"": ""V"",
+    ""OperatingMIC"": ""XTSX"",
+    ""Country"": ""Canada"",
+    ""Currency"": ""CAD"",
+    ""CountryISO2"": ""CA"",
+    ""CountryISO3"": ""CAN""
+  },
+  {
+    ""Name"": ""MICEX Moscow Russia"",
+    ""Code"": ""MCX"",
+    ""OperatingMIC"": null,
+    ""Country"": ""Russia"",
+    ""Currency"": ""RUB"",
+    ""CountryISO2"": ""RU"",
+    ""CountryISO3"": ""RUS""
+  }
+]
+"),
+            }
+        },
     };
 }

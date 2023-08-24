@@ -11,14 +11,13 @@ internal class MockHttpResponseMessage : HttpMessageHandler
         this.messages = messages;
     }
 
-    /// <inheritdoc/>
     protected override Task<HttpResponseMessage> SendAsync(HttpRequestMessage request, CancellationToken cancellationToken)
     {
         if (request.RequestUri == null) throw new NullReferenceException(nameof(request.RequestUri));
 
         string uri = request.RequestUri.ToString();
-        var response = messages.ContainsKey(uri)
-            ? messages[uri] ?? new HttpResponseMessage(HttpStatusCode.NoContent)
+        var response = messages.TryGetValue(uri, out var value)
+            ? value ?? new HttpResponseMessage(HttpStatusCode.NoContent)
             : new HttpResponseMessage(HttpStatusCode.NotFound);
 
         response.RequestMessage = request;

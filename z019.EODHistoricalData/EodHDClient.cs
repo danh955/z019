@@ -6,6 +6,7 @@ using System.Globalization;
 using System.Linq;
 using System.Net;
 using System.Text;
+using System.Text.Json;
 using System.Threading.Tasks;
 using CsvHelper;
 using CsvHelper.Configuration;
@@ -44,7 +45,7 @@ public sealed partial class EodHDClient
     }
 
     /// <summary>
-    /// This executes the query and returns the item list.
+    /// This executes the CSV query and returns the item list.
     /// </summary>
     /// <typeparam name="T">The class type to return.</typeparam>
     /// <param name="uri">The URL of the website to get the data.</param>
@@ -52,10 +53,25 @@ public sealed partial class EodHDClient
     /// <param name="cancellationToken">CancellationToken.</param>
     /// <returns>A list of items.</returns>
     /// <exception cref="HttpRequestException"></exception>
-    private async Task<List<T>> ExecuteQueryAsync<T>(
-        string uri,
-        ClassMap<T>? classMap,
-        CancellationToken cancellationToken)
+    private async Task<List<T>> ExecuteCsvQueryAsync<T>(string uri, ClassMap<T>? classMap, CancellationToken cancellationToken)
+    {
+        return await ExecuteQueryAsync<T>(uri, (response) => GetCsvFromResponseAsync<T>(response, classMap, cancellationToken), cancellationToken).ConfigureAwait(false);
+    }
+
+    /// <summary>
+    /// This executes the JSON query and returns the item list.
+    /// </summary>
+    /// <typeparam name="T">The class type to return.</typeparam>
+    /// <param name="uri">The URL of the website to get the data.</param>
+    /// <param name="cancellationToken">CancellationToken.</param>
+    /// <returns>A list of items.</returns>
+    /// <exception cref="HttpRequestException"></exception>
+    private async Task<List<T>> ExecuteJsonQueryAsync<T>(string uri, CancellationToken cancellationToken)
+    {
+        return await ExecuteQueryAsync<T>(uri, (response) => GetJsonFromResponseAsync<T>(response, cancellationToken), cancellationToken).ConfigureAwait(false);
+    }
+
+    private async Task<List<T>> ExecuteQueryAsync<T>(string uri, Func<HttpResponseMessage, Task<List<T>>> GetFromResponseAsync, CancellationToken cancellationToken)
     {
         this.logger?.LogDebug("httpClient.GetAsync {uri}", uri.Replace(this.apiToken, "TokenRemoved"));
 
@@ -73,12 +89,12 @@ public sealed partial class EodHDClient
                 this.logger?.LogDebug("retryAttempt = {retryAttempt}, Result.StatusCode = {StatusCode}", retryAttempt, outcome.Result.StatusCode);
             });
 
-        var response = await httpRetryPolicy.ExecuteAndCaptureAsync(() => this.httpClient.GetAsync(uri, cancellationToken));
+        var response = await httpRetryPolicy.ExecuteAndCaptureAsync(async () => await this.httpClient.GetAsync(uri, cancellationToken).ConfigureAwait(false)).ConfigureAwait(false);
 
         if (response.Outcome == OutcomeType.Successful)
         {
             if (response.Result.IsSuccessStatusCode)
-                return await GetFromResponseAsync<T>(response.Result, classMap, cancellationToken);
+                return await GetFromResponseAsync(response.Result).ConfigureAwait(false);
 
             string message = $"There was an error while executing the HTTP query. Reason: {response.Result.ReasonPhrase}";
             this.logger?.LogDebug("Result: {reason}", message);
@@ -93,15 +109,21 @@ public sealed partial class EodHDClient
         }
     }
 
-    private async Task<List<T>> GetFromResponseAsync<T>(HttpResponseMessage response, ClassMap<T>? classMap, CancellationToken cancellationToken)
+    private async Task<List<T>> GetCsvFromResponseAsync<T>(HttpResponseMessage response, ClassMap<T>? classMap, CancellationToken cancellationToken)
     {
-        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken);
+        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
         using var reader = new StreamReader(stream);
         using var csv = new CsvReader(reader, CultureInfo.InvariantCulture);
         csv.Context.TypeConverterCache.RemoveConverter<long>();
         csv.Context.TypeConverterCache.AddConverter<long>(new LongTypeConverter(logger));
         if (classMap != null) csv.Context.RegisterClassMap(classMap);
         return csv.GetRecords<T>().ToList();
+    }
+
+    private static async Task<List<T>> GetJsonFromResponseAsync<T>(HttpResponseMessage response, CancellationToken cancellationToken)
+    {
+        using var stream = await response.Content.ReadAsStreamAsync(cancellationToken).ConfigureAwait(false);
+        return await JsonSerializer.DeserializeAsync<List<T>>(stream, cancellationToken: cancellationToken).ConfigureAwait(false) ?? new();
     }
 
     private string ApiUrlBuilder(

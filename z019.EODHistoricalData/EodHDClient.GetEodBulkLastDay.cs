@@ -20,13 +20,13 @@ public partial class EodHDClient
     /// <param name="symbols">A comma delimited list of stock symbols to retrieve.  Default is all.</param>
     /// <param name="date">The date to collect the stock prices.  Default is todays date.</param>
     /// <returns>List of price data for each stock symbol on a selected day.</returns>
-    public async Task<List<EodLastPrice>> GetEodBulkLastDayAsync(
+    public async Task<List<EodHDLastPrice>> GetEodBulkLastDayAsync(
         string? exchangeCode = null,
         string? symbols = null,
         DateOnly? date = null,
         CancellationToken cancellationToken = default)
     {
-        return await GetEodBulkLastDayAsync<EodLastPrice>(exchangeCode, symbols, date, null, cancellationToken).ConfigureAwait(false);
+        return await GetEodBulkLastDayAsync<EodHDLastPrice>(exchangeCode, symbols, date, null, cancellationToken).ConfigureAwait(false);
     }
 
     /// <summary>
@@ -48,8 +48,8 @@ public partial class EodHDClient
         exchangeCode ??= "US";
         var url = ApiUrlBuilder(EodBulkLastDayAction, data: exchangeCode, symbols: symbols, date: date, csv: true);
 
-        return await ExecuteQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
+        return await ExecuteCsvQueryAsync<T>(url, classMap, cancellationToken).ConfigureAwait(false);
     }
 
-    public record EodLastPrice(string Code, string Ex, DateOnly Date, double Open, double High, double Low, double Close, double Adjusted_close, long Volume);
+    public record EodHDLastPrice(string Code, string Ex, DateOnly Date, double Open, double High, double Low, double Close, double Adjusted_close, long Volume);
 }
