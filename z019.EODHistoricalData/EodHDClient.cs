@@ -79,7 +79,7 @@ public sealed partial class EodHDClient
 
     private async Task<List<T>> ExecuteQueryAsync<T>(string uri, Func<HttpResponseMessage, Task<List<T>>> GetFromResponseAsync, CancellationToken cancellationToken)
     {
-        this.logger?.LogDebug("httpClient.GetAsync {uri}", uri.Replace(this.options.ApiToken, "TokenRemoved"));
+        this.logger?.LogDebug("httpClient.GetAsync {uri}", options.ApiToken == null ? "TokenMissing" : uri.Replace(options.ApiToken, "TokenRemoved"));
 
         Polly.Retry.AsyncRetryPolicy<HttpResponseMessage> httpRetryPolicy = Policy
             .HandleResult<HttpResponseMessage>(r => r.StatusCode == (HttpStatusCode)429)
