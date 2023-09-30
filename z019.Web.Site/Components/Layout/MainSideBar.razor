@@ -1,0 +1,54 @@
+﻿@inject NavigationManager navManager
+@implements IDisposable
+
+<MudDrawer @bind-Open="DrawerOpen" ClipMode="DrawerClipMode.Always" Elevation="2" Variant="@DrawerVariant.Mini">
+    <MudNavMenu>
+        @switch (navPath)
+        {
+            case "settings":
+            case string p when p.StartsWith("settings/"):
+                <MudText Typo="Typo.h6" Class="px-4">Settings</MudText>
+                <MudDivider Class="my-2" />
+                <MudNavLink Href="/settings" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">General</MudNavLink>
+                <MudNavLink Href="/settings/more" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.MoreHoriz">More</MudNavLink>
+                break;
+
+            default:
+                <MudText Typo="Typo.h6" Class="px-4">Home</MudText>
+                <MudDivider Class="my-2" />
+                <MudNavLink Href="/" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Home">Home</MudNavLink>
+                <MudNavLink Href="/about" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Info">About</MudNavLink>
+                break;
+        }
+    </MudNavMenu>
+</MudDrawer>
+<div>
+    "@navPath"
+</div>
+
+@code
+{
+    [Parameter]
+    public bool DrawerOpen { get; set; } = true;
+
+    string navPath = string.Empty;
+
+    protected override void OnInitialized()
+    {
+        navPath = navManager.Uri.Substring(navManager.BaseUri.Length);
+        navManager.LocationChanged += LocationChanged;
+        base.OnInitialized();
+    }
+
+    void LocationChanged(object? sender, LocationChangedEventArgs e)
+    {
+        navPath = navManager.Uri.Substring(navManager.BaseUri.Length);
+        base.StateHasChanged();
+    }
+
+    void IDisposable.Dispose()
+    {
+        // Unsubscribe from the event when our component is disposed
+        navManager.LocationChanged -= LocationChanged;
+    }
+}
