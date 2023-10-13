@@ -1,0 +1,46 @@
+﻿@using Microsoft.EntityFrameworkCore
+@using z019.Storage.SqlStorage
+@inject StorageDbContext db
+
+<MudTable Dense="true" Hover="true" SortLabel="Sort By" FixedHeader="true"
+        ServerData="@(new Func<TableState, Task<TableData<Exchange>>>(ServerReload))">
+    <HeaderContent>
+        <MudTh><MudTableSortLabel SortLabel="ID" T="Exchange" InitialDirection="SortDirection.Ascending">ID</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Name" T="Exchange">Name</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Code" T="Exchange">Code</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="OperatingMIC" T="Exchange">OperatingMIC</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Country" T="Exchange">Country</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="Currency" T="Exchange">Currency</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="CountryISO2" T="Exchange">CountryISO2</MudTableSortLabel></MudTh>
+        <MudTh><MudTableSortLabel SortLabel="CountryISO3" T="Exchange">CountryISO3</MudTableSortLabel></MudTh>
+    </HeaderContent>
+    <RowTemplate>
+        <MudTd DataLabel="ID">@context.Id</MudTd>
+        <MudTd DataLabel="Name">@context.Name</MudTd>
+        <MudTd DataLabel="Code">@context.Code</MudTd>
+        <MudTd DataLabel="OperatingMIC">@context.OperatingMIC</MudTd>
+        <MudTd DataLabel="Country">@context.Country</MudTd>
+        <MudTd DataLabel="Currency">@context.Currency</MudTd>
+        <MudTd DataLabel="CountryISO2">@context.CountryISO2</MudTd>
+        <MudTd DataLabel="CountryISO3">@context.CountryISO3</MudTd>
+    </RowTemplate>
+    <PagerContent>
+        <MudTablePager />
+    </PagerContent>
+</MudTable>
+
+@code {
+    private async Task<TableData<Exchange>> ServerReload(TableState state)
+    {
+        TableData<Exchange> data = new();
+
+        data.TotalItems = await db.Exchanges.CountAsync();
+        data.Items = await db.Exchanges
+                            .ExchangeTableStateOrderBy(state)
+                            .Skip(state.Page * state.PageSize)
+                            .Take(state.PageSize)
+                            .ToListAsync();
+
+        return data;
+    }
+}

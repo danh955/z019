@@ -15,6 +15,10 @@
 
 ## Unit testing
 
+- xunit
+- xunit.runner.visualstudio
+- Divergic.Logging.Xunit
+- Microsoft.NET.Test.Sdk
 
 ## Visual Studio Settings
 
@@ -28,3 +32,5 @@
 - [Markdown Editor v2](https://marketplace.visualstudio.com/items?itemName=MadsKristensen.MarkdownEditor2)
 
 ## CSS Framework
+
+- [MudBlazor](https://mudblazor.com)

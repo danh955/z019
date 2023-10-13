@@ -7,10 +7,8 @@
 <MudLayout>
     <MainAppBar OnDrawerOpenChanged="_ => drawerOpen = !drawerOpen" />
     <MainSideBar DrawerOpen="@drawerOpen" />
-    <MudMainContent>
-        <main class="px-3">
-            @Body
-        </main>
+    <MudMainContent Class="px-2">
+        @Body
     </MudMainContent>
 </MudLayout>
 

@@ -5,12 +5,12 @@
     <MudNavMenu>
         @switch (navPath)
         {
-            case "settings":
-            case string p when p.StartsWith("settings/"):
-                <MudText Typo="Typo.h6" Class="px-4">Settings</MudText>
+            case "more":
+            case string p when p.StartsWith("more/"):
+                <MudText Typo="Typo.h6" Class="px-4">More</MudText>
                 <MudDivider Class="my-2" />
-                <MudNavLink Href="/settings" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">General</MudNavLink>
-                <MudNavLink Href="/settings/more" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.MoreHoriz">More</MudNavLink>
+                <MudNavLink Href="/more" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Settings">Settings</MudNavLink>
+                <MudNavLink Href="/more/databaseTables" Match="NavLinkMatch.All" Icon="@Icons.Material.Filled.Storage">Database Tables</MudNavLink>
                 break;
 
             default:
@@ -35,15 +35,20 @@
 
     protected override void OnInitialized()
     {
-        navPath = navManager.Uri.Substring(navManager.BaseUri.Length);
+        SetNavePath();
         navManager.LocationChanged += LocationChanged;
         base.OnInitialized();
     }
 
     void LocationChanged(object? sender, LocationChangedEventArgs e)
     {
-        navPath = navManager.Uri.Substring(navManager.BaseUri.Length);
+        SetNavePath();
         base.StateHasChanged();
+    }
+
+    void SetNavePath()
+    {
+        navPath = navManager.Uri.Substring(navManager.BaseUri.Length).ToLower();
     }
 
     void IDisposable.Dispose()
