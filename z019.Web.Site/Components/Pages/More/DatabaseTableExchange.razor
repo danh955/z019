@@ -1,0 +1,41 @@
+﻿@page "/more/databaseTable/Exchange"
+@layout DatabaseTableLayout
+@using Microsoft.EntityFrameworkCore
+@using z019.Storage.SqlStorage
+@inject StorageDbContext db
+
+<MudDataGrid Dense=true FixedHeader=true Hover=true
+             T=Exchange ServerData="@(new Func<GridState<Exchange>, Task<GridData<Exchange>>>(ServerReload))">
+    <ToolBarContent>
+        <MudText Typo="Typo.h6">Exchange Table</MudText>
+        <MudSpacer/>
+        <MudDataGridPager T="Exchange" />
+    </ToolBarContent>
+    <Columns>
+        <PropertyColumn Property="e => e.Id" InitialDirection="SortDirection.Ascending"/>
+        <PropertyColumn Property="e => e.Name" />
+        <PropertyColumn Property="e => e.Code" />
+        <PropertyColumn Property="e => e.OperatingMIC" />
+        <PropertyColumn Property="e => e.Country" />
+        <PropertyColumn Property="e => e.Currency" />
+        <PropertyColumn Property="e => e.CountryISO2" />
+        <PropertyColumn Property="e => e.CountryISO3" />
+    </Columns>
+</MudDataGrid>
+
+@code
+{
+    private async Task<GridData<Exchange>> ServerReload(GridState<Exchange> state)
+    {
+        GridData<Exchange> data = new();
+
+        data.TotalItems = await db.Exchanges.CountAsync();
+        data.Items = await db.Exchanges
+                            .OrderBy(state)
+                            .Skip(state.Page * state.PageSize)
+                            .Take(state.PageSize)
+                            .ToListAsync();
+
+        return data;
+    }
+}
