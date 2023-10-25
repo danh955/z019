@@ -10,13 +10,15 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["z019.Web.Site/z019.Web.Site.csproj", "z019.Web.Site/"]
-RUN dotnet restore "z019.Web.Site/z019.Web.Site.csproj"
+COPY ["z019.Storage.SqlStorage/z019.Storage.SqlStorage.csproj", "z019.Storage.SqlStorage/"]
+RUN dotnet restore "./z019.Web.Site/./z019.Web.Site.csproj"
 COPY . .
 WORKDIR "/src/z019.Web.Site"
-RUN dotnet build "z019.Web.Site.csproj" -c $BUILD_CONFIGURATION -o /app/build
+RUN dotnet build "./z019.Web.Site.csproj" -c $BUILD_CONFIGURATION -o /app/build
 
 FROM build AS publish
-RUN dotnet publish "z019.Web.Site.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
+ARG BUILD_CONFIGURATION=Release
+RUN dotnet publish "./z019.Web.Site.csproj" -c $BUILD_CONFIGURATION -o /app/publish /p:UseAppHost=false
 
 FROM base AS final
 WORKDIR /app
