@@ -10,6 +10,8 @@ FROM mcr.microsoft.com/dotnet/sdk:8.0 AS build
 ARG BUILD_CONFIGURATION=Release
 WORKDIR /src
 COPY ["z019.Web.Site/z019.Web.Site.csproj", "z019.Web.Site/"]
+COPY ["z019.BackgroundJobs/z019.BackgroundJobs.csproj", "z019.BackgroundJobs/"]
+COPY ["z019.EodHistoricalData/z019.EodHistoricalData.csproj", "z019.EodHistoricalData/"]
 COPY ["z019.Storage.SqlStorage/z019.Storage.SqlStorage.csproj", "z019.Storage.SqlStorage/"]
 RUN dotnet restore "./z019.Web.Site/./z019.Web.Site.csproj"
 COPY . .

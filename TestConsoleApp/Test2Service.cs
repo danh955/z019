@@ -8,18 +8,11 @@ using Microsoft.Extensions.Logging;
 using z019.EodHistoricalData;
 using z019.Storage.SqlStorage;
 
-public class Test2Service : BackgroundService
+public class Test2Service(EodHDClient client, IDbContextFactory<StorageDbContext> dbFactory, ILogger<Test2Service> logger) : BackgroundService
 {
-    private readonly EodHDClient client;
-    private readonly IDbContextFactory<StorageDbContext> dbFactory;
-    private readonly ILogger<Test2Service> logger;
-
-    public Test2Service(EodHDClient client, IDbContextFactory<StorageDbContext> dbFactory, ILogger<Test2Service> logger)
-    {
-        this.client = client;
-        this.dbFactory = dbFactory;
-        this.logger = logger;
-    }
+    private readonly EodHDClient client = client;
+    private readonly IDbContextFactory<StorageDbContext> dbFactory = dbFactory;
+    private readonly ILogger<Test2Service> logger = logger;
 
     protected override async Task ExecuteAsync(CancellationToken cancellationToken)
     {

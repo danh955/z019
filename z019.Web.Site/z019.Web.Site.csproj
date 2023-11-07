@@ -16,6 +16,7 @@
   </ItemGroup>
 
   <ItemGroup>
+    <ProjectReference Include="..\z019.BackgroundJobs\z019.BackgroundJobs.csproj" />
     <ProjectReference Include="..\z019.Storage.SqlStorage\z019.Storage.SqlStorage.csproj" />
   </ItemGroup>
 

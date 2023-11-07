@@ -1,0 +1,34 @@
+﻿@inject z019.BackgroundJobs.UpdateExchangeTableService job
+@implements IDisposable
+
+<MudToolBar  Dense=true>
+    <MudSpacer />
+    <MudButton OnClick=UpdateExchangeTable Variant="Variant.Filled" Color="Color.Primary" Disabled="@job.IsBusy">@buttonText</MudButton>
+</MudToolBar>
+
+    @code {
+    private string buttonText => job.IsBusy
+                                    ? $"Update progress: {job.Percentage}%"
+                                    : "Update Exchange Table";
+
+    protected override void OnInitialized()
+    {
+        base.OnInitialized();
+        job.OnStatusChanged += StatusChanged;
+    }
+
+    private void UpdateExchangeTable()
+    {
+        job.UpdateExchangeTable(); 
+    }
+
+    private void StatusChanged()
+    {
+        this.StateHasChanged();
+    }
+
+    public void Dispose()
+    {
+        job.OnStatusChanged -= StatusChanged;
+    }
+}

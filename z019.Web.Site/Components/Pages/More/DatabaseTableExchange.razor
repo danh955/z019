@@ -4,6 +4,8 @@
 @using z019.Storage.SqlStorage
 @inject StorageDbContext db
 
+<ExchangeTableToolBar></ExchangeTableToolBar>
+
 <MudDataGrid Dense=true FixedHeader=true Hover=true
              T=Exchange ServerData="@(new Func<GridState<Exchange>, Task<GridData<Exchange>>>(ServerReload))">
     <ToolBarContent>

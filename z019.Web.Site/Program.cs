@@ -1,8 +1,10 @@
 using Microsoft.Data.Sqlite;
 using Microsoft.EntityFrameworkCore;
 using MudBlazor.Services;
-using Serilog.Events;
 using Serilog;
+using Serilog.Events;
+using z019.BackgroundJobs;
+using z019.EodHistoricalData;
 using z019.Storage.SqlStorage;
 using z019.Web.Site.Components;
 
@@ -17,7 +19,10 @@ Log.Information("Application Initializing");
 
 try
 {
+    var eodHDOptions = new EodHDClientOptions();
+
     var builder = WebApplication.CreateBuilder(args);
+    builder.Configuration.Bind(EodHDClientOptions.SectionName, eodHDOptions);
 
     builder.Host.UseSerilog((context, services, configuration) => configuration
         .ReadFrom.Configuration(context.Configuration)
@@ -28,10 +33,13 @@ try
     var connectionString = SqliteConnectionString(builder.Configuration);
 
     // Add services to the container.
-    builder.Services.AddRazorComponents().AddInteractiveServerComponents();
-    builder.Services.AddMudServices();
-    builder.Services.AddPooledDbContextFactory<StorageDbContext>(options => options.UseSqlite(connectionString));
-    builder.Services.AddDbContext<StorageDbContext>(options => options.UseSqlite(connectionString));
+    var services = builder.Services;
+    services.AddRazorComponents().AddInteractiveServerComponents();
+    services.AddMudServices();
+    services.AddPooledDbContextFactory<StorageDbContext>(options => options.UseSqlite(connectionString));
+    services.AddDbContext<StorageDbContext>(options => options.UseSqlite(connectionString));
+    services.AddBackgroundJobs();
+    services.AddEodHistoricalDataService(eodHDOptions);
 
     Log.Information("Application Starting");
 
